@@ -1,0 +1,19 @@
+delimiter //
+create procedure money_action( in id int, in amount double)
+begin
+	start transaction;
+    update person set money=money+amount where id_person=id and money+amount >0;
+    set @test=row_count();
+	if(@test>0) then 
+		commit;
+        if(amount>0) then
+			insert into action(id_person, amount, date, action_type) values(id,amount,now(),'pano');
+		else
+			insert into action(id_person, amount, date, action_type) values(id,amount,now(),'otto');
+		end if;
+	else
+		rollback;
+	end if;
+end
+// 
+delimiter ;
