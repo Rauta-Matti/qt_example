@@ -16,4 +16,19 @@ router.get('/allpersons',
     }
 );
 
+router.get('/oneperson/:id', 
+    function(request, response){
+        example_sql.getOnePerson(request.params.id,
+            function(err, dbResult){
+                if(err){
+                    response.listenerCount(err);
+                }
+                else{
+                    response.json(dbResult[0]);
+                }
+            }
+            )
+    }
+);
+
 module.exports = router;
