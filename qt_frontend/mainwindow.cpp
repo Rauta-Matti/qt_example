@@ -25,11 +25,33 @@ void MainWindow::on_btnGetAllPersons_clicked()
     request.setRawHeader( "Authorization", headerData.toLocal8Bit() );
     allPersonsManager = new QNetworkAccessManager(this);
     connect(allPersonsManager, SIGNAL(finished (QNetworkReply*)),
-    this, SLOT(getBookSlot(QNetworkReply*)));
+    this, SLOT(allPersonsSlot(QNetworkReply*)));
     allPersonsReply = allPersonsManager->get(request);
 }
 
 void MainWindow::allPersonsSlot(QNetworkReply *reply)
 {
+    QByteArray response_data=reply->readAll();
+    qDebug()<< response_data;
+    if(response_data.compare("-4078")==0){
+        ui->labelResault->setText("Virhe tietokantayhteydessä");
+    }
+    else{
+        QJsonDocument json_doc = QJsonDocument::fromJson(response_data);
+        QJsonArray json_array = json_doc.array();
+        QString persons;
+
+        foreach (const QJsonValue &value, json_array) {
+        QJsonObject json_obj = value.toObject();
+        persons+=QString::number(json_obj["id_person"].toInt())+" "+json_obj["fname"].toString()+" "
+    ""+json_obj["lname"].toString()+" "+QString::number((json_obj["money"].toDouble()))+ "\r\n";
+    }
+
+
+    ui->labelResault->setText(persons);
+    }
+    allPersonsReply->deleteLater();
+    reply->deleteLater();
+    allPersonsManager->deleteLater();
 
 }

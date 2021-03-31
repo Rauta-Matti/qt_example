@@ -5,6 +5,8 @@
 #include <QtNetwork>
 #include <QNetworkAccessManager>
 #include <QJsonDocument>
+#include <QString>
+#include<istream>
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
